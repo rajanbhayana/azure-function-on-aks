@@ -12,7 +12,7 @@
 Expose a HTTP trigger azure function internally. We would be able to access it from a bastion VM on the same network but not externally.
 Alternatively, see how a simple YAML change will allow access to function via public IP.
 
-![](https://ibb.co/YLrGCJp)
+https://ibb.co/YLrGCJp
 
 ## Steps -
 1. Create a test function with http endpoint.  You can do it in visual studio code or Visual studio IDE. No change needed in code to support deployment on AKS. see below local.settings.json and host.json file that I used.
