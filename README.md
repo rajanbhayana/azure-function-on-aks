@@ -4,7 +4,7 @@
 - You would be able to create a http trigger function and deploy it on AKS
 - Would allow you to control/inspect network.
 - Same steps would allow to deploy on any other Kubernetes environment
-- Azure arc not mandatory. However it would be recommended as it provides a better control plane. Set up Azure Arc for App Service, Functions, and Logic Apps - Azure App Service | Microsoft Docs
+- Azure arc not mandatory. However it would be recommended as it provides a better control plane. https://docs.microsoft.com/en-us/azure/app-service/manage-create-arc-environment?tabs=bash
 - Function can be exposed internally or have a public IP.
 - Please comment for any doubts or blockers.
 
@@ -57,6 +57,7 @@ COPY --from=publish /app/publish .
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
        AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 `
+
 3. Create azure container registry. Push the docker image here. You can use any registry to hold docker images but since we are going to deploy on azure AKS, we are using ACR.
 
 4. Create an AKS cluster. We are going to deploy our function on this AKS. When creating AKS, we are using CNI network. That will give our function endpoint a private IP from VNET itself. To create a CNI based AKS, follow guidelines here. https://docs.microsoft.com/en-us/azure/aks/configure-azure-cni
