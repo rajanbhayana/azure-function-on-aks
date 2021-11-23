@@ -19,43 +19,71 @@ https://ibb.co/YLrGCJp
 
 `{
     "IsEncrypted": false,
-    "Values": {
-        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-        "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+
+        "Values": {
+        
+            "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        
+            "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    
     }
 }`
 
 `{
     "version": "2.0",
+    
     "logging": {
+    
         "applicationInsights": {
+        
             "samplingSettings": {
+            
                 "isEnabled": true,
+                
                 "excludedTypes": "Request"
+            
             }
+        
         }
+    
     }
 }`
 
 2. Create docker image of function. Add a dockerfile to the project and create docker file. See below the dockerfile I used. Its the default one visual studio created for me when I added docker support to project. No alterations were done to it to support functions on K8.
 
 `FROM mcr.microsoft.com/azure-functions/dotnet:3.0 AS base
+
 WORKDIR /home/site/wwwroot
+
 EXPOSE 80
+
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+
 WORKDIR /src
+
 COPY ["FunctionAppHttpTrigger1.csproj", "."]
+
 RUN dotnet restore "./FunctionAppHttpTrigger1.csproj"
+
 COPY . .
+
 WORKDIR "/src/."
+
 RUN dotnet build "FunctionAppHttpTrigger1.csproj" -c Release -o /app/build
+
 FROM build AS publish
+
 RUN dotnet publish "FunctionAppHttpTrigger1.csproj" -c Release -o /app/publish
+
 FROM base AS final
+
 WORKDIR /home/site/wwwroot
+
 COPY --from=publish /app/publish .
+
 ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
-       AzureFunctionsJobHost__Logging__Console__IsEnabled=true
+
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true
 `
 
 3. Create azure container registry. Push the docker image here. You can use any registry to hold docker images but since we are going to deploy on azure AKS, we are using ACR.
